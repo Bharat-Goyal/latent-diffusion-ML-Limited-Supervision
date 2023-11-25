@@ -113,7 +113,7 @@ class Upsample(nn.Module):
                 x, (x.shape[2], x.shape[3] * 2, x.shape[4] * 2), mode="nearest"
             )
         else:
-            x = F.interpolate(x, scale_factor=2, mode="nearest")
+            x = F.interpolate(x, scale_factor=3, mode="nearest")
         if self.use_conv:
             x = self.conv(x)
         return x
@@ -146,7 +146,7 @@ class Downsample(nn.Module):
         self.out_channels = out_channels or channels
         self.use_conv = use_conv
         self.dims = dims
-        stride = 2 if dims != 3 else (1, 2, 2)
+        stride = 3 if dims != 3 else (1, 2, 2)
         if use_conv:
             self.op = conv_nd(
                 dims, self.channels, self.out_channels, 3, stride=stride, padding=padding
@@ -450,7 +450,7 @@ class UNetModel(nn.Module):
         attention_resolutions,
         dropout=0,
         channel_mult=(1, 2, 4, 8),
-        conv_resample=True,
+        conv_resample=False,
         dims=2,
         num_classes=None,
         use_checkpoint=False,
@@ -494,7 +494,7 @@ class UNetModel(nn.Module):
         self.attention_resolutions = attention_resolutions
         self.dropout = dropout
         self.channel_mult = channel_mult
-        self.conv_resample = conv_resample
+        self.conv_resample = False
         self.num_classes = num_classes
         self.use_checkpoint = use_checkpoint
         self.dtype = th.float16 if use_fp16 else th.float32

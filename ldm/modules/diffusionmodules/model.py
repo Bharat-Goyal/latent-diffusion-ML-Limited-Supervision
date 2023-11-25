@@ -51,7 +51,7 @@ class Upsample(nn.Module):
                                         padding=1)
 
     def forward(self, x):
-        x = torch.nn.functional.interpolate(x, scale_factor=2.0, mode="nearest")
+        x = torch.nn.functional.interpolate(x, scale_factor=3.0, mode="nearest")
         if self.with_conv:
             x = self.conv(x)
         return x
@@ -75,7 +75,7 @@ class Downsample(nn.Module):
             x = torch.nn.functional.pad(x, pad, mode="constant", value=0)
             x = self.conv(x)
         else:
-            x = torch.nn.functional.avg_pool2d(x, kernel_size=2, stride=2)
+            x = torch.nn.functional.avg_pool2d(x, kernel_size=3, stride=3)
         return x
 
 
@@ -215,7 +215,7 @@ def make_attn(in_channels, attn_type="vanilla"):
 
 class Model(nn.Module):
     def __init__(self, *, ch, out_ch, ch_mult=(1,2,4,8), num_res_blocks,
-                 attn_resolutions, dropout=0.0, resamp_with_conv=True, in_channels,
+                 attn_resolutions, dropout=0.0, resamp_with_conv=False, in_channels,
                  resolution, use_timestep=True, use_linear_attn=False, attn_type="vanilla"):
         super().__init__()
         if use_linear_attn: attn_type = "linear"
@@ -367,7 +367,7 @@ class Model(nn.Module):
 
 class Encoder(nn.Module):
     def __init__(self, *, ch, out_ch, ch_mult=(1,2,4,8), num_res_blocks,
-                 attn_resolutions, dropout=0.0, resamp_with_conv=True, in_channels,
+                 attn_resolutions, dropout=0.0, resamp_with_conv=False, in_channels,
                  resolution, z_channels, double_z=True, use_linear_attn=False, attn_type="vanilla",
                  **ignore_kwargs):
         super().__init__()
@@ -461,7 +461,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self, *, ch, out_ch, ch_mult=(1,2,4,8), num_res_blocks,
-                 attn_resolutions, dropout=0.0, resamp_with_conv=True, in_channels,
+                 attn_resolutions, dropout=0.0, resamp_with_conv=False, in_channels,
                  resolution, z_channels, give_pre_end=False, tanh_out=False, use_linear_attn=False,
                  attn_type="vanilla", **ignorekwargs):
         super().__init__()

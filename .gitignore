@@ -1,0 +1,9 @@
+logs
+*.sh
+*.edu
+__pycache__/
+*.sbatch
+src/
+*.egg-info/
+spec/
+taming/
